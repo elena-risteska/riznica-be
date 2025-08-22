@@ -9,15 +9,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
+// MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB error:", err));
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// Example route
-app.get("/", (req, res) => {
-  res.send("API is running 🚀");
+// Example test route
+app.get("/testdb", async (req, res) => {
+  try {
+    // Just get database name to confirm
+    const dbName = mongoose.connection.db.databaseName;
+    res.json({ message: "MongoDB is working 🚀", db: dbName });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
