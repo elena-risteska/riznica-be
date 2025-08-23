@@ -1,14 +1,11 @@
-import User from "../models/User.js";
-
 // Get current user profile
 export const getProfile = async (req, res) => {
   res.json(req.user);
 };
 
-// Update user profile
+// Update current user profile
 export const updateProfile = async (req, res) => {
   const user = req.user;
-
   const { firstName, lastName, username, bio, profilePic } = req.body;
 
   if (firstName) user.firstName = firstName;
@@ -25,11 +22,11 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Get all users (for testing only)
-export const getAllUsers = async (req, res) => {
+// Delete current user account
+export const deleteProfile = async (req, res) => {
   try {
-    const users = await User.find().select("-password"); // exclude password
-    res.json(users);
+    await req.user.deleteOne();
+    res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
