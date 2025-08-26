@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   bio: { type: String },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Location" }],
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

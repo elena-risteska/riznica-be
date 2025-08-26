@@ -21,6 +21,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       bio,
       profilePic,
+      role: "user", // 👈 default role
     });
 
     await newUser.save();
@@ -38,6 +39,7 @@ export const register = async (req, res) => {
         email,
         bio,
         profilePic,
+        role: newUser.role, // 👈 include role in response
       },
       token,
     });
@@ -70,6 +72,7 @@ export const login = async (req, res) => {
         email: user.email,
         bio: user.bio,
         profilePic: user.profilePic,
+        role: user.role, // 👈 include role in response
       },
       token,
     });
