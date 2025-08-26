@@ -1,9 +1,16 @@
 import Location from "../models/Location.js";
 
-// Get all locations
+// Get all locations (with optional search by title)
 export const getLocations = async (req, res) => {
+  const { title } = req.query; // 👈 support ?title= query param
+
   try {
-    const locations = await Location.find();
+    let query = {};
+    if (title) {
+      query.title = { $regex: title, $options: "i" }; // case-insensitive match
+    }
+
+    const locations = await Location.find(query);
     res.json(locations);
   } catch (err) {
     res.status(500).json({ message: err.message });
