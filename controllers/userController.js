@@ -1,13 +1,20 @@
+import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
 import Location from "../models/Location.js";
 
-// Get current user profile
-export const getProfile = async (req, res) => {
-  res.json(req.user);
-};
+/* ===== Profile ===== */
 
-// Update current user profile
-export const updateProfile = async (req, res) => {
+// @desc    Get current user profile
+// @route   GET /api/users/profile
+// @access  Private
+export const getProfile = asyncHandler(async (req, res) => {
+  res.json(req.user);
+});
+
+// @desc    Update current user profile
+// @route   PUT /api/users/profile
+// @access  Private
+export const updateProfile = asyncHandler(async (req, res) => {
   const user = req.user;
   const { firstName, lastName, username, bio, profilePic } = req.body;
 
@@ -17,71 +24,63 @@ export const updateProfile = async (req, res) => {
   if (bio) user.bio = bio;
   if (profilePic) user.profilePic = profilePic;
 
-  try {
-    const updatedUser = await user.save();
-    res.json(updatedUser);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  const updatedUser = await user.save();
+  res.json(updatedUser);
+});
 
-// Delete current user account
-export const deleteProfile = async (req, res) => {
-  try {
-    await req.user.deleteOne();
-    res.json({ message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+// @desc    Delete current user account
+// @route   DELETE /api/users/profile
+// @access  Private
+export const deleteProfile = asyncHandler(async (req, res) => {
+  await req.user.deleteOne();
+  res.json({ message: "User deleted successfully" });
+});
 
 /* ===== Favorites ===== */
 
-// Add a location to favorites
-export const addFavorite = async (req, res) => {
+// @desc    Add a location to favorites
+// @route   POST /api/users/favorites/:locationId
+// @access  Private
+export const addFavorite = asyncHandler(async (req, res) => {
   const user = req.user;
   const { locationId } = req.params;
 
-  try {
-    const location = await Location.findById(locationId);
-    if (!location)
-      return res.status(404).json({ message: "Location not found" });
-
-    if (user.favorites.includes(locationId))
-      return res.status(400).json({ message: "Location already in favorites" });
-
-    user.favorites.push(locationId);
-    await user.save();
-
-    res.json({ message: "Added to favorites", favorites: user.favorites });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  const location = await Location.findById(locationId);
+  if (!location) {
+    res.status(404);
+    throw new Error("Location not found");
   }
-};
 
-// Remove a location from favorites
-export const removeFavorite = async (req, res) => {
+  if (user.favorites.includes(locationId)) {
+    res.status(400);
+    throw new Error("Location already in favorites");
+  }
+
+  user.favorites.push(locationId);
+  await user.save();
+
+  res.json({ message: "Added to favorites", favorites: user.favorites });
+});
+
+// @desc    Remove a location from favorites
+// @route   DELETE /api/users/favorites/:locationId
+// @access  Private
+export const removeFavorite = asyncHandler(async (req, res) => {
   const user = req.user;
   const { locationId } = req.params;
 
-  try {
-    user.favorites = user.favorites.filter(
-      (favId) => favId.toString() !== locationId
-    );
-    await user.save();
+  user.favorites = user.favorites.filter(
+    (favId) => favId.toString() !== locationId
+  );
+  await user.save();
 
-    res.json({ message: "Removed from favorites", favorites: user.favorites });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+  res.json({ message: "Removed from favorites", favorites: user.favorites });
+});
 
-// Get all favorites of the current user
-export const getFavorites = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).populate("favorites");
-    res.json(user.favorites);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+// @desc    Get all favorites of the current user
+// @route   GET /api/users/favorites
+// @access  Private
+export const getFavorites = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).populate("favorites");
+  res.json(user.favorites);
+});
