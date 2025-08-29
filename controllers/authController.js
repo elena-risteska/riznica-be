@@ -27,10 +27,17 @@ export const register = asyncHandler(async (req, res) => {
     req.body;
 
   // Check if user already exists
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({
+    $or: [{ email }, { username }],
+  });
+
   if (existingUser) {
     res.status(400);
-    throw new Error("Електронската пошта е зафатена");
+    if (existingUser.email === email) {
+      throw new Error("Електронската пошта е зафатена");
+    } else {
+      throw new Error("Корисничкото име е зафатено");
+    }
   }
 
   // Hash password
