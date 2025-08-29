@@ -30,7 +30,7 @@ export const register = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     res.status(400);
-    throw new Error("Email already exists");
+    throw new Error("Електронската пошта е зафатена");
   }
 
   // Hash password
@@ -73,13 +73,13 @@ export const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     res.status(400);
-    throw new Error("Invalid credentials");
+    throw new Error("Невалидни податоци");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     res.status(400);
-    throw new Error("Invalid credentials");
+    throw new Error("Невалидни податоци");
   }
 
   res.json({

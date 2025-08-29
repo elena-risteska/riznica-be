@@ -13,7 +13,6 @@ export const getLocations = asyncHandler(async (req, res) => {
   res.json(locations);
 });
 
-// Get single location by ID
 export const getLocationById = asyncHandler(async (req, res) => {
   const location = await Location.findById(req.params.id);
   if (!location) {
@@ -23,14 +22,12 @@ export const getLocationById = asyncHandler(async (req, res) => {
   res.json(location);
 });
 
-// Create new location
 export const createLocation = asyncHandler(async (req, res) => {
   const location = new Location(req.body);
   const savedLocation = await location.save();
   res.status(201).json(savedLocation);
 });
 
-// Update location
 export const updateLocation = asyncHandler(async (req, res) => {
   const location = await Location.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -43,7 +40,6 @@ export const updateLocation = asyncHandler(async (req, res) => {
   res.json(location);
 });
 
-// Delete location
 export const deleteLocation = asyncHandler(async (req, res) => {
   const location = await Location.findByIdAndDelete(req.params.id);
   if (!location) {

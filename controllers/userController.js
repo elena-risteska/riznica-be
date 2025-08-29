@@ -2,18 +2,10 @@ import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
 import Location from "../models/Location.js";
 
-/* ===== Profile ===== */
-
-// @desc    Get current user profile
-// @route   GET /api/users/profile
-// @access  Private
 export const getProfile = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
 
-// @desc    Update current user profile
-// @route   PUT /api/users/profile
-// @access  Private
 export const updateProfile = asyncHandler(async (req, res) => {
   const user = req.user;
   const { firstName, lastName, username, bio, profilePic } = req.body;
@@ -28,19 +20,11 @@ export const updateProfile = asyncHandler(async (req, res) => {
   res.json(updatedUser);
 });
 
-// @desc    Delete current user account
-// @route   DELETE /api/users/profile
-// @access  Private
 export const deleteProfile = asyncHandler(async (req, res) => {
   await req.user.deleteOne();
   res.json({ message: "User deleted successfully" });
 });
 
-/* ===== Favorites ===== */
-
-// @desc    Add a location to favorites
-// @route   POST /api/users/favorites/:locationId
-// @access  Private
 export const addFavorite = asyncHandler(async (req, res) => {
   const user = req.user;
   const { locationId } = req.params;
@@ -62,9 +46,6 @@ export const addFavorite = asyncHandler(async (req, res) => {
   res.json({ message: "Added to favorites", favorites: user.favorites });
 });
 
-// @desc    Remove a location from favorites
-// @route   DELETE /api/users/favorites/:locationId
-// @access  Private
 export const removeFavorite = asyncHandler(async (req, res) => {
   const user = req.user;
   const { locationId } = req.params;
@@ -77,9 +58,6 @@ export const removeFavorite = asyncHandler(async (req, res) => {
   res.json({ message: "Removed from favorites", favorites: user.favorites });
 });
 
-// @desc    Get all favorites of the current user
-// @route   GET /api/users/favorites
-// @access  Private
 export const getFavorites = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).populate("favorites");
   res.json(user.favorites);
