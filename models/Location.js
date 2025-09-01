@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const locationSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  images: [{ type: String }],
+  images: [String],
   place: { type: String, required: true },
   type: {
     type: String,

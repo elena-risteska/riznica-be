@@ -23,7 +23,13 @@ export const getLocationById = asyncHandler(async (req, res) => {
 });
 
 export const createLocation = asyncHandler(async (req, res) => {
-  const location = new Location(req.body);
+  const imageUrls = req.files?.map((file) => file.path) || [];
+
+  const location = new Location({
+    ...req.body,
+    images: imageUrls,
+  });
+
   const savedLocation = await location.save();
   res.status(201).json(savedLocation);
 });
