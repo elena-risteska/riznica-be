@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import locationRoutes from "./routes/locationRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/locations", locationRoutes);
+app.use("/api/requests", requestRoutes);
 
 // Test route
 app.get("/testdb", async (req, res) => {
@@ -31,7 +33,7 @@ app.get("/testdb", async (req, res) => {
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("Welcome to Riznica API 🌄");
+  res.send("Welcome to Riznica API");
 });
 
 // 404 handler for unmatched routes
