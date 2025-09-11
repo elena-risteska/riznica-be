@@ -2,12 +2,17 @@ import Location from "../models/Location.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const getLocations = asyncHandler(async (req, res) => {
-  const { title } = req.query;
+  const { title, activity, region } = req.query;
   let query = {};
   if (title) {
     query.title = { $regex: title, $options: "i" };
   }
-
+  if (activity) {
+    query.activities = { $in: [activity] };
+  }
+  if (region) {
+    query.region = region;
+  }
   const locations = await Location.find(query);
   res.json(locations);
 });

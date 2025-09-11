@@ -23,7 +23,12 @@ export const addComment = asyncHandler(async (req, res) => {
     text,
   });
 
-  res.status(201).json(comment);
+  const populatedComment = await comment.populate(
+    "user",
+    "firstName lastName username"
+  );
+
+  res.status(201).json(populatedComment);
 });
 
 export const getCommentsByLocation = asyncHandler(async (req, res) => {

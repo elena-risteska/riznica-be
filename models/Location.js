@@ -5,6 +5,7 @@ const locationSchema = new mongoose.Schema({
   description: { type: String, required: true },
   mainInfo: { type: String, required: true },
   directions: { type: String, required: true },
+  region: { type: String, required: true },
   hiking: { type: String, required: true },
   biking: { type: String, required: true },
   legend: { type: String, required: true },
